@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -7,6 +8,9 @@ const tourSchema = new mongoose.Schema(
       type: String,
       required: [true, 'A tour must have a name'],
       unique: true,
+      maxlenght: [40, 'A tour must have at most 40 characters'],
+      minlenght: [10, 'A tour must have at most 10 characters'],
+      validate: [validator.isAlpha, 'Tour name must only contain characters'],
     },
     slug: String,
     duration: {
@@ -19,12 +23,17 @@ const tourSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      enum: ['easy', 'medium', 'difficult'],
       required: [true, 'A tour must have a difficulty'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'Difficulty must be easy, medium or difficult',
+      },
     },
     ratingsAverage: {
       type: Number,
       default: 4.5,
+      minlenght: [1, 'Rating must be above 1.0'],
+      maxlenght: [5, 'Rating must be above 5.0'],
     },
     ratingsQuantity: {
       type: Number,
@@ -37,10 +46,11 @@ const tourSchema = new mongoose.Schema(
     priceDiscount: {
       type: Number,
       validate: {
+        // this only points to current doc on NEW document creation
         validator: function (val) {
           return val >= 0 && val <= 100;
         },
-        message: 'Discount percentage must be between 0 and 100',
+        message: 'Discount percentage ({VALUE}) must be between 0 and 100',
       },
     },
     summary: {
@@ -72,6 +82,7 @@ const tourSchema = new mongoose.Schema(
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
+    validateBeforeSave: true,
   },
 );
 
@@ -82,6 +93,7 @@ tourSchema.virtual('durationWeeks').get(function () {
 // document middleware
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
+  this.validate();
   next();
 });
 
