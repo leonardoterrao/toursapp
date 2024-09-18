@@ -91,12 +91,16 @@ tourSchema.pre('save', function (next) {
 // });
 
 // query middleware
-tourSchema.pre('find', function (next) {
+tourSchema.pre(/^find/, function (next) {
   this.find({ secretTour: { $ne: true } });
   next();
 });
 
-// static method
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(`Returning ${docs.length} items`);
+//   next();
+// });
+
 
 const Tour = mongoose.model('Tour', tourSchema);
 
