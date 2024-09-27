@@ -1,5 +1,16 @@
 const catchAsync = require('../utils/catchAsync');
 const User = require('../models/userModel');
+const AppError = require('../utils/appError');
+
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) {
+      newObj[el] = obj[el];
+    }
+  });
+  return newObj;
+};
 
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.find();
@@ -9,6 +20,32 @@ exports.getAllUsers = catchAsync(async (req, res, next) => {
     results: users.length,
     data: {
       users,
+    },
+  });
+});
+
+exports.updateMe = catchAsync(async (req, res, next) => {
+  if (req.body.password || req.body.passwordConfirm) {
+    return next(
+      new AppError(
+        'Updating password through this route is not allowed. Please use /updateMyPassword.',
+        400,
+      ),
+    );
+  }
+
+  // filter out unwanted fileds names that are now allowed to be updated
+  const filteredBody = filterObj(req.body, 'name', 'email');
+  const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
+    new: true,
+    runValidators: true,
+  });
+
+  res.status(200).json({
+    status: 'success',
+    message: 'User updated!',
+    data: {
+      user: updatedUser,
     },
   });
 });
