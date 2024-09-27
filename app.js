@@ -34,7 +34,7 @@ app.use('/api', limiter);
 app.use(mongoSanitize());
 
 // data sanitization agains XSS
-app.user(xss());
+app.use(xss());
 
 // body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
