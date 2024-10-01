@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+// const User = required('./userModel.js');
 // const validator = require('validator');
 
 const tourSchema = new mongoose.Schema(
@@ -101,6 +102,12 @@ const tourSchema = new mongoose.Schema(
         description: String,
       },
     ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
@@ -116,9 +123,14 @@ tourSchema.virtual('durationWeeks').get(function () {
 // document middleware
 tourSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
-  this.validate();
   next();
 });
+
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guids = await Promise.all(guidesPromises);
+//   next();
+// });
 
 // tourSchema.post('save', function (doc, next) {
 //   console.log(`New tour created: ${doc.name}`);
