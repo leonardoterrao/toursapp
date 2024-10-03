@@ -16,6 +16,7 @@ router
 
 router
   .route('/:id')
+  .get(reviewController.getOneReview)
   .delete(authController.protect, reviewController.deleteReview)
   .patch(authController.protect, reviewController.updateReview);
 
