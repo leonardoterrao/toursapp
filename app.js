@@ -46,6 +46,7 @@ app.use(xss());
 
 // body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
 // serve static files from the public directory (for images, css, etc.)
