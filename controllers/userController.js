@@ -6,7 +6,7 @@ const factory = require('./handlerFactory');
 
 const multerStorage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, 'public/image/users');
+    callback(null, 'public/img/users');
   },
   filename: (req, file, callback) => {
     const ext = file.mimetype.split('/')[1];
@@ -48,9 +48,6 @@ exports.getMe = (req, res, next) => {
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
-  console.log(req.file);
-  console.log(req.body);
-
   if (req.body.password || req.body.passwordConfirm) {
     return next(
       new AppError(
@@ -62,6 +59,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
   // filter out unwanted fileds names that are now allowed to be updated
   const filteredBody = filterObj(req.body, 'name', 'email');
+  if (req.file) {
+    filteredBody.photo = req.file.filename;
+  }
+
   const updatedUser = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true,
     runValidators: true,
