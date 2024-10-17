@@ -8,21 +8,21 @@ export const login = async (email, password) => {
       method: 'POST',
       url: 'http://localhost:8000/api/v1/users/login',
       data: {
-        email, 
-        password
-      }
+        email,
+        password,
+      },
     });
 
     if (res.data.status === 'success') {
-      showAlert('success', 'Logged in successfully!')
+      showAlert('success', 'Logged in successfully!');
       window.setTimeout(() => {
-        location.assign('/')
-      }, 1000)      
+        location.assign('/');
+      }, 1000);
     }
   } catch (err) {
-    showAlert('error', err.response.data.message)
+    showAlert('error', err.response.data.message);
   }
-}
+};
 
 export const logout = async () => {
   try {
@@ -32,7 +32,7 @@ export const logout = async () => {
     });
 
     if (res.data.status === 'success') location.reload(true);
-  } catch(err) {
-    showAlert('error', 'Error logging out! Try again.')
+  } catch (err) {
+    showAlert('error', 'Error logging out! Try again.');
   }
-}
+};
