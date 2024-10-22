@@ -24,6 +24,11 @@ exports.getTour = catchAsync(async (req, res, next) => {
     next(new AppError('There is no tour with that name.', 404));
   }
 
+  res.setHeader(
+    'Content-Security-Policy',
+    'script-src cdnjs.cloudflare.com js.stripe.com self localhost:8000',
+  );
+
   res.status(200).render('tour', {
     title: `${tour.name} tour`,
     tour,
@@ -33,7 +38,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
 exports.getLoginForm = (req, res) => {
   res.setHeader(
     'Content-Security-Policy',
-    'script-src cdnjs.cloudflare.com self localhost:8000',
+    'script-src cdnjs.cloudflare.com js.stripe.com self localhost:8000',
   );
 
   res.status(200).render('login', {
