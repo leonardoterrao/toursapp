@@ -27,7 +27,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
   res.setHeader(
     'Content-Security-Policy',
-    'script-src cdnjs.cloudflare.com js.stripe.com self localhost:8000',
+    'script-src cdnjs.cloudflare.com js.stripe.com self',
   );
 
   res.status(200).render('tour', {
@@ -39,7 +39,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
 exports.getLoginForm = (req, res) => {
   res.setHeader(
     'Content-Security-Policy',
-    'script-src cdnjs.cloudflare.com js.stripe.com self localhost:8000',
+    'script-src cdnjs.cloudflare.com js.stripe.com self',
   );
 
   res.status(200).render('login', {
